@@ -1,0 +1,1521 @@
+.Net中字节序（Byte Order）相关类的反编译结果
+
+　　.Net中，字节序（Byte Order）相关处理的类有——
+System.BitConverter。GetBytes等方法。本机字节序（IsLittleEndian属性）。（程序集：mscorlib）
+System.IO.BinaryReader。ReadInt32等方法。小端字节序。（程序集：mscorlib）
+System.IO.BinaryWriter。Write 方法。小端字节序。（程序集：mscorlib）
+System.Net.IPAddress。HostToNetworkOrder等方法。本机字节序与网络字节序的转换。（程序集：System）
+
+　　为了彻底处理字节序问题，我决定将这些反编译分析一下。现将分析结果整理如下，.Net框架的版本为4.0。
+
+System.BitConverter：
+{
+	/// <summary>
+	///               Converts base data types to an array of bytes, and an array of bytes to base data types.
+	///           </summary>
+	/// <filterpriority>2</filterpriority>
+	public static class BitConverter
+	{
+		/// <summary>
+		///               Indicates the byte order ("endianess") in which data is stored in this computer architecture.
+		///           </summary>
+		/// <filterpriority>1</filterpriority>
+		public static readonly bool IsLittleEndian = true;
+		/// <summary>
+		///               Returns the specified Boolean value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 1.
+		///           </returns>
+		/// <param name="value">
+		///               A Boolean value. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		public static byte[] GetBytes(bool value)
+		{
+			return new byte[]
+			{
+				value ? 1 : 0
+			};
+		}
+		/// <summary>
+		///               Returns the specified Unicode character value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 2.
+		///           </returns>
+		/// <param name="value">
+		///               A character to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		public static byte[] GetBytes(char value)
+		{
+			return BitConverter.GetBytes((short)value);
+		}
+		/// <summary>
+		///               Returns the specified 16-bit signed integer value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 2.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static byte[] GetBytes(short value)
+		{
+			byte[] array = new byte[2];
+			fixed (byte* ptr = array)
+			{
+				*(short*)ptr = value;
+			}
+			return array;
+		}
+		/// <summary>
+		///               Returns the specified 32-bit signed integer value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 4.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static byte[] GetBytes(int value)
+		{
+			byte[] array = new byte[4];
+			fixed (byte* ptr = array)
+			{
+				*(int*)ptr = value;
+			}
+			return array;
+		}
+		/// <summary>
+		///               Returns the specified 64-bit signed integer value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 8.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static byte[] GetBytes(long value)
+		{
+			byte[] array = new byte[8];
+			fixed (byte* ptr = array)
+			{
+				*(long*)ptr = value;
+			}
+			return array;
+		}
+		/// <summary>
+		///               Returns the specified 16-bit unsigned integer value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 2.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public static byte[] GetBytes(ushort value)
+		{
+			return BitConverter.GetBytes((short)value);
+		}
+		/// <summary>
+		///               Returns the specified 32-bit unsigned integer value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 4.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public static byte[] GetBytes(uint value)
+		{
+			return BitConverter.GetBytes((int)value);
+		}
+		/// <summary>
+		///               Returns the specified 64-bit unsigned integer value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 8.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public static byte[] GetBytes(ulong value)
+		{
+			return BitConverter.GetBytes((long)value);
+		}
+		/// <summary>
+		///               Returns the specified single-precision floating point value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 4.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static byte[] GetBytes(float value)
+		{
+			return BitConverter.GetBytes(*(int*)(&value));
+		}
+		/// <summary>
+		///               Returns the specified double-precision floating point value as an array of bytes.
+		///           </summary>
+		/// <returns>
+		///               An array of bytes with length 8.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static byte[] GetBytes(double value)
+		{
+			return BitConverter.GetBytes(*(long*)(&value));
+		}
+		/// <summary>
+		///               Returns a Unicode character converted from two bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A character formed by two bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> equals the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public static char ToChar(byte[] value, int startIndex)
+		{
+			return (char)BitConverter.ToInt16(value, startIndex);
+		}
+		/// <summary>
+		///               Returns a 16-bit signed integer converted from two bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A 16-bit signed integer formed by two bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> equals the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static short ToInt16(byte[] value, int startIndex)
+		{
+			if (value == null)
+			{
+				ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value);
+			}
+			if ((ulong)startIndex >= (ulong)((long)value.Length))
+			{
+				ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.startIndex, ExceptionResource.ArgumentOutOfRange_Index);
+			}
+			if (startIndex > value.Length - 2)
+			{
+				ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+			}
+			short result;
+			if (startIndex % 2 == 0)
+			{
+				result = *(short*)(&value[startIndex]);
+			}
+			else
+			{
+				if (BitConverter.IsLittleEndian)
+				{
+					result = (short)((int)(*(&value[startIndex])) | (int)(&value[startIndex])[(IntPtr)1 / 1] << 8);
+				}
+				else
+				{
+					result = (short)((int)(*(&value[startIndex])) << 8 | (int)(&value[startIndex])[(IntPtr)1 / 1]);
+				}
+			}
+			return result;
+		}
+		/// <summary>
+		///               Returns a 32-bit signed integer converted from four bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A 32-bit signed integer formed by four bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="value" /> minus 3, and is less than or equal to the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static int ToInt32(byte[] value, int startIndex)
+		{
+			if (value == null)
+			{
+				ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value);
+			}
+			if ((ulong)startIndex >= (ulong)((long)value.Length))
+			{
+				ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.startIndex, ExceptionResource.ArgumentOutOfRange_Index);
+			}
+			if (startIndex > value.Length - 4)
+			{
+				ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+			}
+			int result;
+			if (startIndex % 4 == 0)
+			{
+				result = *(int*)(&value[startIndex]);
+			}
+			else
+			{
+				if (BitConverter.IsLittleEndian)
+				{
+					result = ((int)(*(&value[startIndex])) | (int)(&value[startIndex])[(IntPtr)1 / 1] << 8 | (int)(&value[startIndex])[(IntPtr)2 / 1] << 16 | (int)(&value[startIndex])[(IntPtr)3 / 1] << 24);
+				}
+				else
+				{
+					result = ((int)(*(&value[startIndex])) << 24 | (int)(&value[startIndex])[(IntPtr)1 / 1] << 16 | (int)(&value[startIndex])[(IntPtr)2 / 1] << 8 | (int)(&value[startIndex])[(IntPtr)3 / 1]);
+				}
+			}
+			return result;
+		}
+		/// <summary>
+		///               Returns a 64-bit signed integer converted from eight bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A 64-bit signed integer formed by eight bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="value" /> minus 7, and is less than or equal to the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static long ToInt64(byte[] value, int startIndex)
+		{
+			if (value == null)
+			{
+				ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value);
+			}
+			if ((ulong)startIndex >= (ulong)((long)value.Length))
+			{
+				ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.startIndex, ExceptionResource.ArgumentOutOfRange_Index);
+			}
+			if (startIndex > value.Length - 8)
+			{
+				ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+			}
+			long result;
+			if (startIndex % 8 == 0)
+			{
+				result = *(long*)(&value[startIndex]);
+			}
+			else
+			{
+				if (BitConverter.IsLittleEndian)
+				{
+					int num = (int)(*(&value[startIndex])) | (int)(&value[startIndex])[(IntPtr)1 / 1] << 8 | (int)(&value[startIndex])[(IntPtr)2 / 1] << 16 | (int)(&value[startIndex])[(IntPtr)3 / 1] << 24;
+					int num2 = (int)(&value[startIndex])[(IntPtr)4 / 1] | (int)(&value[startIndex])[(IntPtr)5 / 1] << 8 | (int)(&value[startIndex])[(IntPtr)6 / 1] << 16 | (int)(&value[startIndex])[(IntPtr)7 / 1] << 24;
+					result = (long)((ulong)num | (ulong)((ulong)((long)num2) << 32));
+				}
+				else
+				{
+					int num3 = (int)(*(&value[startIndex])) << 24 | (int)(&value[startIndex])[(IntPtr)1 / 1] << 16 | (int)(&value[startIndex])[(IntPtr)2 / 1] << 8 | (int)(&value[startIndex])[(IntPtr)3 / 1];
+					int num4 = (int)(&value[startIndex])[(IntPtr)4 / 1] << 24 | (int)(&value[startIndex])[(IntPtr)5 / 1] << 16 | (int)(&value[startIndex])[(IntPtr)6 / 1] << 8 | (int)(&value[startIndex])[(IntPtr)7 / 1];
+					result = (long)((ulong)num4 | (ulong)((ulong)((long)num3) << 32));
+				}
+			}
+			return result;
+		}
+		/// <summary>
+		///               Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A 16-bit unsigned integer formed by two bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               The array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> equals the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public static ushort ToUInt16(byte[] value, int startIndex)
+		{
+			return (ushort)BitConverter.ToInt16(value, startIndex);
+		}
+		/// <summary>
+		///               Returns a 32-bit unsigned integer converted from four bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A 32-bit unsigned integer formed by four bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="value" /> minus 3, and is less than or equal to the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public static uint ToUInt32(byte[] value, int startIndex)
+		{
+			return (uint)BitConverter.ToInt32(value, startIndex);
+		}
+		/// <summary>
+		///               Returns a 64-bit unsigned integer converted from eight bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A 64-bit unsigned integer formed by the eight bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="value" /> minus 7, and is less than or equal to the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public static ulong ToUInt64(byte[] value, int startIndex)
+		{
+			return (ulong)BitConverter.ToInt64(value, startIndex);
+		}
+		/// <summary>
+		///               Returns a single-precision floating point number converted from four bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A single-precision floating point number formed by four bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="value" /> minus 3, and is less than or equal to the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static float ToSingle(byte[] value, int startIndex)
+		{
+			int num = BitConverter.ToInt32(value, startIndex);
+			return *(float*)(&num);
+		}
+		/// <summary>
+		///               Returns a double-precision floating point number converted from eight bytes at a specified position in a byte array.
+		///           </summary>
+		/// <returns>
+		///               A double precision floating point number formed by eight bytes beginning at <paramref name="startIndex" />.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="startIndex" /> is greater than or equal to the length of <paramref name="value" /> minus 7, and is less than or equal to the length of <paramref name="value" /> minus 1.
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static double ToDouble(byte[] value, int startIndex)
+		{
+			long num = BitConverter.ToInt64(value, startIndex);
+			return *(double*)(&num);
+		}
+		
+		// public static string ToString(byte[] value, int startIndex, int length)
+		
+		/// <summary>
+		///               Returns a Boolean value converted from one byte at a specified position in a byte array.
+		///           </summary>
+		/// <returns>true if the byte at <paramref name="startIndex" /> in <paramref name="value" /> is nonzero; otherwise, false.
+		///           </returns>
+		/// <param name="value">
+		///               An array of bytes. 
+		///           </param>
+		/// <param name="startIndex">
+		///               The starting position within <paramref name="value" />. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="value" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="startIndex" /> is less than zero or greater than the length of <paramref name="value" /> minus 1. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public static bool ToBoolean(byte[] value, int startIndex)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException("value");
+			}
+			if (startIndex < 0)
+			{
+				throw new ArgumentOutOfRangeException("startIndex", Environment.GetResourceString("ArgumentOutOfRange_NeedNonNegNum"));
+			}
+			if (startIndex > value.Length - 1)
+			{
+				throw new ArgumentOutOfRangeException("startIndex", Environment.GetResourceString("ArgumentOutOfRange_Index"));
+			}
+			return value[startIndex] != 0;
+		}
+		/// <summary>
+		///               Converts the specified double-precision floating point number to a 64-bit signed integer.
+		///           </summary>
+		/// <returns>
+		///               A 64-bit signed integer whose value is equivalent to <paramref name="value" />.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static long DoubleToInt64Bits(double value)
+		{
+			return *(long*)(&value);
+		}
+		/// <summary>
+		///               Converts the specified 64-bit signed integer to a double-precision floating point number.
+		///           </summary>
+		/// <returns>
+		///               A double-precision floating point number whose value is equivalent to <paramref name="value" />.
+		///           </returns>
+		/// <param name="value">
+		///               The number to convert. 
+		///           </param>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe static double Int64BitsToDouble(long value)
+		{
+			return *(double*)(&value);
+		}
+	}
+}
+
+
+System.IO.BinaryReader：
+{
+	/// <summary>
+	///               Reads primitive data types as binary values in a specific encoding.
+	///           </summary>
+	/// <filterpriority>2</filterpriority>
+	[ComVisible(true)]
+	public class BinaryReader : IDisposable
+	{
+		private const int MaxCharBytesSize = 128;
+		private Stream m_stream;
+		private byte[] m_buffer;
+		private Decoder m_decoder;
+		private byte[] m_charBytes;
+		private char[] m_singleChar;
+		private char[] m_charBuffer;
+		private int m_maxCharsSize;
+		private bool m_2BytesPerChar;
+		private bool m_isMemoryStream;
+		
+		// ...
+		
+		/// <summary>
+		///               Reads a Boolean value from the current stream and advances the current position of the stream by one byte.
+		///           </summary>
+		/// <returns>true if the byte is nonzero; otherwise, false.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
+		public virtual bool ReadBoolean()
+		{
+			this.FillBuffer(1);
+			return this.m_buffer[0] != 0;
+		}
+		/// <summary>
+		///               Reads the next byte from the current stream and advances the current position of the stream by one byte.
+		///           </summary>
+		/// <returns>
+		///               The next byte read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		public virtual byte ReadByte()
+		{
+			if (this.m_stream == null)
+			{
+				__Error.FileNotOpen();
+			}
+			int num = this.m_stream.ReadByte();
+			if (num == -1)
+			{
+				__Error.EndOfFile();
+			}
+			return (byte)num;
+		}
+		/// <summary>
+		///               Reads a signed byte from this stream and advances the current position of the stream by one byte.
+		///           </summary>
+		/// <returns>
+		///               A signed byte read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[CLSCompliant(false), TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
+		public virtual sbyte ReadSByte()
+		{
+			this.FillBuffer(1);
+			return (sbyte)this.m_buffer[0];
+		}
+		/// <summary>
+		///               Reads the next character from the current stream and advances the current position of the stream in accordance with the Encoding used and the specific character being read from the stream.
+		///           </summary>
+		/// <returns>
+		///               A character read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentException">
+		///               A surrogate character was read. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		public virtual char ReadChar()
+		{
+			int num = this.Read();
+			if (num == -1)
+			{
+				__Error.EndOfFile();
+			}
+			return (char)num;
+		}
+		/// <summary>
+		///               Reads a 2-byte signed integer from the current stream and advances the current position of the stream by two bytes.
+		///           </summary>
+		/// <returns>
+		///               A 2-byte signed integer read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
+		public virtual short ReadInt16()
+		{
+			this.FillBuffer(2);
+			return (short)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8);
+		}
+		/// <summary>
+		///               Reads a 2-byte unsigned integer from the current stream using little-endian encoding and advances the position of the stream by two bytes.
+		///           </summary>
+		/// <returns>
+		///               A 2-byte unsigned integer read from this stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[CLSCompliant(false)]
+		public virtual ushort ReadUInt16()
+		{
+			this.FillBuffer(2);
+			return (ushort)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8);
+		}
+		/// <summary>
+		///               Reads a 4-byte signed integer from the current stream and advances the current position of the stream by four bytes.
+		///           </summary>
+		/// <returns>
+		///               A 4-byte signed integer read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		public virtual int ReadInt32()
+		{
+			if (this.m_isMemoryStream)
+			{
+				if (this.m_stream == null)
+				{
+					__Error.FileNotOpen();
+				}
+				MemoryStream memoryStream = this.m_stream as MemoryStream;
+				return memoryStream.InternalReadInt32();
+			}
+			this.FillBuffer(4);
+			return (int)this.m_buffer[0] | (int)this.m_buffer[1] << 8 | (int)this.m_buffer[2] << 16 | (int)this.m_buffer[3] << 24;
+		}
+		/// <summary>
+		///               Reads a 4-byte unsigned integer from the current stream and advances the position of the stream by four bytes.
+		///           </summary>
+		/// <returns>
+		///               A 4-byte unsigned integer read from this stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[CLSCompliant(false)]
+		public virtual uint ReadUInt32()
+		{
+			this.FillBuffer(4);
+			return (uint)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8 | (int)this.m_buffer[2] << 16 | (int)this.m_buffer[3] << 24);
+		}
+		/// <summary>
+		///               Reads an 8-byte signed integer from the current stream and advances the current position of the stream by eight bytes.
+		///           </summary>
+		/// <returns>
+		///               An 8-byte signed integer read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		public virtual long ReadInt64()
+		{
+			this.FillBuffer(8);
+			uint num = (uint)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8 | (int)this.m_buffer[2] << 16 | (int)this.m_buffer[3] << 24);
+			uint num2 = (uint)((int)this.m_buffer[4] | (int)this.m_buffer[5] << 8 | (int)this.m_buffer[6] << 16 | (int)this.m_buffer[7] << 24);
+			return (long)((ulong)num2 << 32 | (ulong)num);
+		}
+		/// <summary>
+		///               Reads an 8-byte unsigned integer from the current stream and advances the position of the stream by eight bytes.
+		///           </summary>
+		/// <returns>
+		///               An 8-byte unsigned integer read from this stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[CLSCompliant(false)]
+		public virtual ulong ReadUInt64()
+		{
+			this.FillBuffer(8);
+			uint num = (uint)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8 | (int)this.m_buffer[2] << 16 | (int)this.m_buffer[3] << 24);
+			uint num2 = (uint)((int)this.m_buffer[4] | (int)this.m_buffer[5] << 8 | (int)this.m_buffer[6] << 16 | (int)this.m_buffer[7] << 24);
+			return (ulong)num2 << 32 | (ulong)num;
+		}
+		/// <summary>
+		///               Reads a 4-byte floating point value from the current stream and advances the current position of the stream by four bytes.
+		///           </summary>
+		/// <returns>
+		///               A 4-byte floating point value read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe virtual float ReadSingle()
+		{
+			this.FillBuffer(4);
+			uint num = (uint)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8 | (int)this.m_buffer[2] << 16 | (int)this.m_buffer[3] << 24);
+			return *(float*)(&num);
+		}
+		/// <summary>
+		///               Reads an 8-byte floating point value from the current stream and advances the current position of the stream by eight bytes.
+		///           </summary>
+		/// <returns>
+		///               An 8-byte floating point value read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe virtual double ReadDouble()
+		{
+			this.FillBuffer(8);
+			uint num = (uint)((int)this.m_buffer[0] | (int)this.m_buffer[1] << 8 | (int)this.m_buffer[2] << 16 | (int)this.m_buffer[3] << 24);
+			uint num2 = (uint)((int)this.m_buffer[4] | (int)this.m_buffer[5] << 8 | (int)this.m_buffer[6] << 16 | (int)this.m_buffer[7] << 24);
+			ulong num3 = (ulong)num2 << 32 | (ulong)num;
+			return *(double*)(&num3);
+		}
+		/// <summary>
+		///               Reads a decimal value from the current stream and advances the current position of the stream by sixteen bytes.
+		///           </summary>
+		/// <returns>
+		///               A decimal value read from the current stream.
+		///           </returns>
+		/// <exception cref="T:System.IO.EndOfStreamException">
+		///               The end of the stream is reached. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>2</filterpriority>
+		public virtual decimal ReadDecimal()
+		{
+			this.FillBuffer(16);
+			decimal result;
+			try
+			{
+				result = decimal.ToDecimal(this.m_buffer);
+			}
+			catch (ArgumentException innerException)
+			{
+				throw new IOException(Environment.GetResourceString("Arg_DecBitCtor"), innerException);
+			}
+			return result;
+		}
+	}
+}
+
+
+System.IO.BinaryWriter：
+{
+	/// <summary>
+	///               Writes primitive types in binary to a stream and supports writing strings in a specific encoding.
+	///           </summary>
+	/// <filterpriority>2</filterpriority>
+	[ComVisible(true)]
+	[Serializable]
+	public class BinaryWriter : IDisposable
+	{
+		private const int LargeByteBufferSize = 256;
+		/// <summary>
+		///               Specifies a <see cref="T:System.IO.BinaryWriter" /> with no backing store.
+		///           </summary>
+		/// <filterpriority>1</filterpriority>
+		public static readonly BinaryWriter Null = new BinaryWriter();
+		/// <summary>
+		///               Holds the underlying stream.
+		///           </summary>
+		protected Stream OutStream;
+		private byte[] _buffer;
+		private Encoding _encoding;
+		private Encoder _encoder;
+		private char[] _tmpOneCharBuffer = new char[1];
+		private byte[] _largeByteBuffer;
+		private int _maxChars;
+		
+		/// <summary>
+		///               Writes a one-byte Boolean value to the current stream, with 0 representing false and 1 representing true.
+		///           </summary>
+		/// <param name="value">
+		///               The Boolean value to write (0 or 1). 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(bool value)
+		{
+			this._buffer[0] = (value ? 1 : 0);
+			this.OutStream.Write(this._buffer, 0, 1);
+		}
+		/// <summary>
+		///               Writes an unsigned byte to the current stream and advances the stream position by one byte.
+		///           </summary>
+		/// <param name="value">
+		///               The unsigned byte to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
+		public virtual void Write(byte value)
+		{
+			this.OutStream.WriteByte(value);
+		}
+		/// <summary>
+		///               Writes a signed byte to the current stream and advances the stream position by one byte.
+		///           </summary>
+		/// <param name="value">
+		///               The signed byte to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public virtual void Write(sbyte value)
+		{
+			this.OutStream.WriteByte((byte)value);
+		}
+		/// <summary>
+		///               Writes a byte array to the underlying stream.
+		///           </summary>
+		/// <param name="buffer">
+		///               A byte array containing the data to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="buffer" /> is null. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(byte[] buffer)
+		{
+			if (buffer == null)
+			{
+				throw new ArgumentNullException("buffer");
+			}
+			this.OutStream.Write(buffer, 0, buffer.Length);
+		}
+		/// <summary>
+		///               Writes a region of a byte array to the current stream.
+		///           </summary>
+		/// <param name="buffer">
+		///               A byte array containing the data to write. 
+		///           </param>
+		/// <param name="index">
+		///               The starting point in <paramref name="buffer" /> at which to begin writing. 
+		///           </param>
+		/// <param name="count">
+		///               The number of bytes to write. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///               The buffer length minus <paramref name="index" /> is less than <paramref name="count" />. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="buffer" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="index" /> or <paramref name="count" /> is negative. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(byte[] buffer, int index, int count)
+		{
+			this.OutStream.Write(buffer, index, count);
+		}
+		/// <summary>
+		///               Writes a Unicode character to the current stream and advances the current position of the stream in accordance with the Encoding used and the specific characters being written to the stream.
+		///           </summary>
+		/// <param name="ch">
+		///               The non-surrogate, Unicode character to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="ch" /> is a single surrogate character.
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe virtual void Write(char ch)
+		{
+			if (char.IsSurrogate(ch))
+			{
+				throw new ArgumentException(Environment.GetResourceString("Arg_SurrogatesNotAllowedAsSingleChar"));
+			}
+			int bytes;
+			fixed (byte* buffer = this._buffer)
+			{
+				bytes = this._encoder.GetBytes(&ch, 1, buffer, 16, true);
+			}
+			this.OutStream.Write(this._buffer, 0, bytes);
+		}
+		/// <summary>
+		///               Writes a character array to the current stream and advances the current position of the stream in accordance with the Encoding used and the specific characters being written to the stream.
+		///           </summary>
+		/// <param name="chars">
+		///               A character array containing the data to write. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="chars" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(char[] chars)
+		{
+			if (chars == null)
+			{
+				throw new ArgumentNullException("chars");
+			}
+			byte[] bytes = this._encoding.GetBytes(chars, 0, chars.Length);
+			this.OutStream.Write(bytes, 0, bytes.Length);
+		}
+		/// <summary>
+		///               Writes a section of a character array to the current stream, and advances the current position of the stream in accordance with the Encoding used and perhaps the specific characters being written to the stream.
+		///           </summary>
+		/// <param name="chars">
+		///               A character array containing the data to write. 
+		///           </param>
+		/// <param name="index">
+		///               The starting point in <paramref name="buffer" /> from which to begin writing. 
+		///           </param>
+		/// <param name="count">
+		///               The number of characters to write. 
+		///           </param>
+		/// <exception cref="T:System.ArgumentException">
+		///               The buffer length minus <paramref name="index" /> is less than <paramref name="count" />. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="chars" /> is null. 
+		///           </exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="index" /> or <paramref name="count" /> is negative. 
+		///           </exception>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(char[] chars, int index, int count)
+		{
+			byte[] bytes = this._encoding.GetBytes(chars, index, count);
+			this.OutStream.Write(bytes, 0, bytes.Length);
+		}
+		/// <summary>
+		///               Writes an eight-byte floating-point value to the current stream and advances the stream position by eight bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The eight-byte floating-point value to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe virtual void Write(double value)
+		{
+			ulong num = *(ulong*)(&value);
+			this._buffer[0] = (byte)num;
+			this._buffer[1] = (byte)(num >> 8);
+			this._buffer[2] = (byte)(num >> 16);
+			this._buffer[3] = (byte)(num >> 24);
+			this._buffer[4] = (byte)(num >> 32);
+			this._buffer[5] = (byte)(num >> 40);
+			this._buffer[6] = (byte)(num >> 48);
+			this._buffer[7] = (byte)(num >> 56);
+			this.OutStream.Write(this._buffer, 0, 8);
+		}
+		/// <summary>
+		///               Writes a decimal value to the current stream and advances the stream position by sixteen bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The decimal value to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(decimal value)
+		{
+			decimal.GetBytes(value, this._buffer);
+			this.OutStream.Write(this._buffer, 0, 16);
+		}
+		/// <summary>
+		///               Writes a two-byte signed integer to the current stream and advances the stream position by two bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The two-byte signed integer to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(short value)
+		{
+			this._buffer[0] = (byte)value;
+			this._buffer[1] = (byte)(value >> 8);
+			this.OutStream.Write(this._buffer, 0, 2);
+		}
+		/// <summary>
+		///               Writes a two-byte unsigned integer to the current stream and advances the stream position by two bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The two-byte unsigned integer to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public virtual void Write(ushort value)
+		{
+			this._buffer[0] = (byte)value;
+			this._buffer[1] = (byte)(value >> 8);
+			this.OutStream.Write(this._buffer, 0, 2);
+		}
+		/// <summary>
+		///               Writes a four-byte signed integer to the current stream and advances the stream position by four bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The four-byte signed integer to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(int value)
+		{
+			this._buffer[0] = (byte)value;
+			this._buffer[1] = (byte)(value >> 8);
+			this._buffer[2] = (byte)(value >> 16);
+			this._buffer[3] = (byte)(value >> 24);
+			this.OutStream.Write(this._buffer, 0, 4);
+		}
+		/// <summary>
+		///               Writes a four-byte unsigned integer to the current stream and advances the stream position by four bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The four-byte unsigned integer to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public virtual void Write(uint value)
+		{
+			this._buffer[0] = (byte)value;
+			this._buffer[1] = (byte)(value >> 8);
+			this._buffer[2] = (byte)(value >> 16);
+			this._buffer[3] = (byte)(value >> 24);
+			this.OutStream.Write(this._buffer, 0, 4);
+		}
+		/// <summary>
+		///               Writes an eight-byte signed integer to the current stream and advances the stream position by eight bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The eight-byte signed integer to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		public virtual void Write(long value)
+		{
+			this._buffer[0] = (byte)value;
+			this._buffer[1] = (byte)(value >> 8);
+			this._buffer[2] = (byte)(value >> 16);
+			this._buffer[3] = (byte)(value >> 24);
+			this._buffer[4] = (byte)(value >> 32);
+			this._buffer[5] = (byte)(value >> 40);
+			this._buffer[6] = (byte)(value >> 48);
+			this._buffer[7] = (byte)(value >> 56);
+			this.OutStream.Write(this._buffer, 0, 8);
+		}
+		/// <summary>
+		///               Writes an eight-byte unsigned integer to the current stream and advances the stream position by eight bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The eight-byte unsigned integer to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[CLSCompliant(false)]
+		public virtual void Write(ulong value)
+		{
+			this._buffer[0] = (byte)value;
+			this._buffer[1] = (byte)(value >> 8);
+			this._buffer[2] = (byte)(value >> 16);
+			this._buffer[3] = (byte)(value >> 24);
+			this._buffer[4] = (byte)(value >> 32);
+			this._buffer[5] = (byte)(value >> 40);
+			this._buffer[6] = (byte)(value >> 48);
+			this._buffer[7] = (byte)(value >> 56);
+			this.OutStream.Write(this._buffer, 0, 8);
+		}
+		/// <summary>
+		///               Writes a four-byte floating-point value to the current stream and advances the stream position by four bytes.
+		///           </summary>
+		/// <param name="value">
+		///               The four-byte floating-point value to write. 
+		///           </param>
+		/// <exception cref="T:System.IO.IOException">
+		///               An I/O error occurs. 
+		///           </exception>
+		/// <exception cref="T:System.ObjectDisposedException">
+		///               The stream is closed. 
+		///           </exception>
+		/// <filterpriority>1</filterpriority>
+		[SecuritySafeCritical]
+		public unsafe virtual void Write(float value)
+		{
+			uint num = *(uint*)(&value);
+			this._buffer[0] = (byte)num;
+			this._buffer[1] = (byte)(num >> 8);
+			this._buffer[2] = (byte)(num >> 16);
+			this._buffer[3] = (byte)(num >> 24);
+			this.OutStream.Write(this._buffer, 0, 4);
+		}
+	}
+}
+
+
+System.Net.IPAddress：
+{
+	/// <summary>Provides an Internet Protocol (IP) address.</summary>
+	[Serializable]
+	public class IPAddress
+	{
+		/// <summary>Provides a copy of the <see cref="T:System.Net.IPAddress" /> as an array of bytes.</summary>
+		/// <returns>A <see cref="T:System.Byte" /> array.</returns>
+		public byte[] GetAddressBytes()
+		{
+			byte[] array;
+			if (this.m_Family == AddressFamily.InterNetworkV6)
+			{
+				array = new byte[16];
+				int num = 0;
+				for (int i = 0; i < 8; i++)
+				{
+					array[num++] = (byte)(this.m_Numbers[i] >> 8 & 255);
+					array[num++] = (byte)(this.m_Numbers[i] & 255);
+				}
+			}
+			else
+			{
+				array = new byte[]
+				{
+					(byte)this.m_Address, 
+					(byte)(this.m_Address >> 8), 
+					(byte)(this.m_Address >> 16), 
+					(byte)(this.m_Address >> 24)
+				};
+			}
+			return array;
+		}
+		/// <summary>Converts a long value from host byte order to network byte order.</summary>
+		/// <returns>A long value, expressed in network byte order.</returns>
+		/// <param name="host">The number to convert, expressed in host byte order. </param>
+		public static long HostToNetworkOrder(long host)
+		{
+			return ((long)IPAddress.HostToNetworkOrder((int)host) & (long)((ulong)-1)) << 32 | ((long)IPAddress.HostToNetworkOrder((int)(host >> 32)) & (long)((ulong)-1));
+		}
+		/// <summary>Converts an integer value from host byte order to network byte order.</summary>
+		/// <returns>An integer value, expressed in network byte order.</returns>
+		/// <param name="host">The number to convert, expressed in host byte order. </param>
+		public static int HostToNetworkOrder(int host)
+		{
+			return ((int)IPAddress.HostToNetworkOrder((short)host) & 65535) << 16 | ((int)IPAddress.HostToNetworkOrder((short)(host >> 16)) & 65535);
+		}
+		/// <summary>Converts a short value from host byte order to network byte order.</summary>
+		/// <returns>A short value, expressed in network byte order.</returns>
+		/// <param name="host">The number to convert, expressed in host byte order. </param>
+		public static short HostToNetworkOrder(short host)
+		{
+			return (short)((int)(host & 255) << 8 | (host >> 8 & 255));
+		}
+		/// <summary>Converts a long value from network byte order to host byte order.</summary>
+		/// <returns>A long value, expressed in host byte order.</returns>
+		/// <param name="network">The number to convert, expressed in network byte order. </param>
+		public static long NetworkToHostOrder(long network)
+		{
+			return IPAddress.HostToNetworkOrder(network);
+		}
+		/// <summary>Converts an integer value from network byte order to host byte order.</summary>
+		/// <returns>An integer value, expressed in host byte order.</returns>
+		/// <param name="network">The number to convert, expressed in network byte order. </param>
+		public static int NetworkToHostOrder(int network)
+		{
+			return IPAddress.HostToNetworkOrder(network);
+		}
+		/// <summary>Converts a short value from network byte order to host byte order.</summary>
+		/// <returns>A short value, expressed in host byte order.</returns>
+		/// <param name="network">The number to convert, expressed in network byte order. </param>
+		public static short NetworkToHostOrder(short network)
+		{
+			return IPAddress.HostToNetworkOrder(network);
+		}
+	}
+}
+
+
+System.Decimal：
+{
+	public struct Decimal : IFormattable, IComparable, IConvertible, IDeserializationCallback, IComparable<decimal>, IEquatable<decimal>
+	{
+		private int flags;
+		private int hi;
+		private int lo;
+		private int mid;
+
+		public static int[] GetBits(decimal d)
+		{
+			return new int[]
+			{
+				d.lo, 
+				d.mid, 
+				d.hi, 
+				d.flags
+			};
+		}
+		internal static void GetBytes(decimal d, byte[] buffer)
+		{
+			buffer[0] = (byte)d.lo;
+			buffer[1] = (byte)(d.lo >> 8);
+			buffer[2] = (byte)(d.lo >> 16);
+			buffer[3] = (byte)(d.lo >> 24);
+			buffer[4] = (byte)d.mid;
+			buffer[5] = (byte)(d.mid >> 8);
+			buffer[6] = (byte)(d.mid >> 16);
+			buffer[7] = (byte)(d.mid >> 24);
+			buffer[8] = (byte)d.hi;
+			buffer[9] = (byte)(d.hi >> 8);
+			buffer[10] = (byte)(d.hi >> 16);
+			buffer[11] = (byte)(d.hi >> 24);
+			buffer[12] = (byte)d.flags;
+			buffer[13] = (byte)(d.flags >> 8);
+			buffer[14] = (byte)(d.flags >> 16);
+			buffer[15] = (byte)(d.flags >> 24);
+		}
+		internal static decimal ToDecimal(byte[] buffer)
+		{
+			int num = (int)buffer[0] | (int)buffer[1] << 8 | (int)buffer[2] << 16 | (int)buffer[3] << 24;
+			int num2 = (int)buffer[4] | (int)buffer[5] << 8 | (int)buffer[6] << 16 | (int)buffer[7] << 24;
+			int num3 = (int)buffer[8] | (int)buffer[9] << 8 | (int)buffer[10] << 16 | (int)buffer[11] << 24;
+			int num4 = (int)buffer[12] | (int)buffer[13] << 8 | (int)buffer[14] << 16 | (int)buffer[15] << 24;
+			return new decimal(num, num2, num3, num4);
+		}
+	}
+}
+
+
+　　参考资料——
+1.老赵《浅谈字节序（Byte Order）及其相关操作》。http://blog.zhaojie.me/2010/02/byte-order-and-related-library.html
+
+
+
+
+
+
+// D:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorlib.dll
+// mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+
+// Architecture: x86
+// Runtime: .NET 4.0
+
+
+
+
+// D:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll
+// System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+
+// Architecture: AnyCPU
+// Runtime: .NET 4.0
+

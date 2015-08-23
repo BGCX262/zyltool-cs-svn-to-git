@@ -1,0 +1,77 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1C5D5009-4561-4150-8718-49F43B4FE720}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>zylTool</RootNamespace>
+    <AssemblyName>zylTool</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bits\BitFloat32.cs" />
+    <Compile Include="Bits\BitFloat64.cs" />
+    <Compile Include="Bits\ByteOrder.cs" />
+    <Compile Include="Bits\ByteSwap.cs" />
+    <Compile Include="Bits\Float16.cs" />
+    <Compile Include="delegate.cs" />
+    <Compile Include="FuncSame.cs" />
+    <Compile Include="Imaging\ColorPixel.cs" />
+    <Compile Include="Imaging\ColorSpace.cs" />
+    <Compile Include="Imaging\FourCCTool.cs" />
+    <Compile Include="Imaging\Test\ZPixelFormatTest.cs" />
+    <Compile Include="Imaging\ZPixelFormat.cs" />
+    <Compile Include="Imaging\ZPixelFormatInfo.cs" />
+    <Compile Include="KeyValuePairs.cs" />
+    <Compile Include="Pointer\IPointerOffset.cs" />
+    <Compile Include="Pointer\PointerOffsetBorder.cs" />
+    <Compile Include="Pointer\PointerOffsetClamp.cs" />
+    <Compile Include="Pointer\PointerTool.cs" />
+    <Compile Include="Text\printStruct.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Imaging\Readme.txt" />
+    <None Include="Pointer\ReadMe.txt" />
+    <Content Include="ReadMe.txt" />
+    <None Include="Text\Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pointer\ptraddr.xls" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

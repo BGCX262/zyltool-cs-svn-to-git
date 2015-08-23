@@ -1,0 +1,217 @@
+D:\Program Files\Microsoft XNA\XNA Game Studio\v2.0\References\Windows\x86\Microsoft.Xna.Framework.dll
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines various types of surface formats.</summary>
+	[SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
+	public enum SurfaceFormat
+	{
+		/// <summary>(Unsigned format) 32-bit ARGB pixel format with alpha, using 8 bits per channel.</summary>
+		Color = 1,
+		/// <summary>(Unsigned format) 32-bit BGR pixel format, where 8 bits are reserved for each color.</summary>
+		Bgr32,
+		/// <summary>(Unsigned format) 32-bit pixel format using 10 bits each for blue, green, and red; and 2 bits for alpha.</summary>
+		Bgra1010102,
+		/// <summary>(Unsigned format) 32-bit RGBA pixel format with alpha, using 8 bits per channel.</summary>
+		Rgba32,
+		/// <summary>(Unsigned format) 32-bit RGB pixel format, where 8 bits are reserved for each color.</summary>
+		Rgb32,
+		/// <summary>(Unsigned format) 32-bit RGBA pixel format using 10 bits for each color and 2 bits for alpha.</summary>
+		Rgba1010102,
+		/// <summary>(Unsigned format) 32-bit pixel format using 16 bits each for red and green.</summary>
+		Rg32,
+		/// <summary>(Unsigned format) 64-bit RGBA pixel format using 16 bits for each component.</summary>
+		Rgba64,
+		/// <summary>(Unsigned format) 16-bit BGR pixel format with 5 bits for blue, 6 bits for green, and 5 bits for red.</summary>
+		Bgr565,
+		/// <summary>(Unsigned format) 16-bit BGRA pixel format where 5 bits are reserved for each color and 1 bit is reserved for alpha.</summary>
+		Bgra5551,
+		/// <summary>(Unsigned format) 16-bit BGR pixel format where 5 bits are reserved for each color.</summary>
+		Bgr555,
+		/// <summary>(Unsigned format) 16-bit BGRA pixel format with 4 bits for each channel.</summary>
+		Bgra4444,
+		/// <summary>(Unsigned format) 16-bit BGR pixel format where 4 bits are reserved for each color.</summary>
+		Bgr444,
+		/// <summary>(Unsigned format) 16-bit BGRA format using 2 bits for blue, 3 bits each for red and green; and 8 bits for alpha.</summary>
+		Bgra2338,
+		/// <summary>(Unsigned format) 8-bit alpha only.</summary>
+		Alpha8,
+		/// <summary>(Unsigned format) 8-bit BGR texture format using 2 bits for blue, 3 bits for green, and 3 bits for red.</summary>
+		Bgr233,
+		/// <summary>(Unsigned format) 24-bit BGR pixel format with 8 bits per channel.</summary>
+		Bgr24,
+		/// <summary>(Signed format) 16-bit bump-map format using 8 bits each for u and v data.</summary>
+		NormalizedByte2,
+		/// <summary>(Signed format) 32-bit bump-map format using 8 bits for each channel.</summary>
+		NormalizedByte4,
+		/// <summary>(Signed format) 32-bit bump-map format using 16 bits for each channel.</summary>
+		NormalizedShort2,
+		/// <summary>(Signed format) 64-bit bump-map format using 16 bits for each component.</summary>
+		NormalizedShort4,
+		/// <summary>(IEEE format) 32-bit float format using 32 bits for the red channel.</summary>
+		Single,
+		/// <summary>(IEEE format) 64-bit float format using 32 bits for the red channel and 32 bits for the green channel.</summary>
+		Vector2,
+		/// <summary>(IEEE format) 128-bit float format using 32 bits for each channel (alpha, blue, green, red).</summary>
+		Vector4,
+		/// <summary>(Floating-point format) 16-bit float format using 16 bits for the red channel.</summary>
+		HalfSingle,
+		/// <summary>(Floating-point format) 32-bit float format using 16 bits for the red channel and 16 bits for the green channel.</summary>
+		HalfVector2,
+		/// <summary>(Floating-point format) 64-bit float format using 16 bits for each channel (alpha, blue, green, red).</summary>
+		HalfVector4,
+		/// <summary>DXT1 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</summary>
+		Dxt1,
+		/// <summary>DXT2 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</summary>
+		Dxt2,
+		/// <summary>DXT3 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</summary>
+		Dxt3,
+		/// <summary>DXT4 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</summary>
+		Dxt4,
+		/// <summary>DXT5 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</summary>
+		Dxt5,
+		/// <summary>(Unsigned format) 8-bit luminance only.</summary>
+		Luminance8,
+		/// <summary>(Unsigned format) 16-bit luminance only.</summary>
+		Luminance16,
+		/// <summary>(Unsigned format) 8-bit using 4 bits each for alpha and luminance.</summary>
+		LuminanceAlpha8,
+		/// <summary>(Unsigned format) 16-bit using 8 bits each for alpha and luminance.</summary>
+		LuminanceAlpha16,
+		/// <summary>(Unsigned format) 8-bit color indexed.</summary>
+		Palette8,
+		/// <summary>(Unsigned format) 8-bit color indexed with 8 bits of alpha.</summary>
+		PaletteAlpha16,
+		/// <summary>(Mixed format) 16-bit bump-map format with luminance using 6 bits for luminance, and 5 bits each for v and u.</summary>
+		NormalizedLuminance16,
+		/// <summary>(Mixed format) 32-bit bump-map format with luminance using 8 bits for each channel.</summary>
+		NormalizedLuminance32,
+		/// <summary>(Mixed format) 32-bit bump-map format using 2 bits for alpha and 10 bits each for w, v, and u.</summary>
+		NormalizedAlpha1010102,
+		/// <summary>(Signed format) 16-bit normal compression format. The texture sampler computes the C channel from: C = sqrt(1 ? U2? V2).</summary>
+		NormalizedByte2Computed,
+		/// <summary>VideoYuYv format (PC98 compliance)</summary>
+		VideoYuYv,
+		/// <summary>YUY2 format (PC98 compliance)</summary>
+		VideoUyVy,
+		/// <summary>A 16-bit packed RGB format analogous to VideoYuYv (U0Y0, V0Y1, U2Y2, and so on). It requires a pixel pair to properly represent the color value. The first pixel in the pair contains 8 bits of green (in the low 8 bits) and 8 bits of red (in the high 8 bits). The second pixel contains 8 bits of green (in the low 8 bits) and 8 bits of blue (in the high 8 bits). Together, the two pixels share the red and blue components, while each has a unique green component (R0G0, B0G1, R2G2, and so on). The texture sampler does not normalize the colors when looking up into a pixel shader; they remain in the range of 0.0f to 255.0f. This is true for all programmable pixel shader models. For the fixed-function pixel shader, the hardware should normalize to the 0.f to 1.f range and essentially treat it as the VideoUyVy texture. Hardware that exposes this format must have GraphicsDeviceCapabilities.PixelShader1xMaxValue set to a value capable of handling that range.</summary>
+		VideoGrGb,
+		/// <summary>A 16-bit packed RGB format analogous to VideoUyVy (Y0U0, Y1V0, Y2U2, and so on). It requires a pixel pair to properly represent the color value. The first pixel in the pair contains 8 bits of green (in the high 8 bits) and 8 bits of red (in the low 8 bits). The second pixel contains 8 bits of green (in the high 8 bits) and 8 bits of blue (in the low 8 bits). Together, the two pixels share the red and blue components, while each has a unique green component (G0R0, G1B0, G2R2, and so on). The texture sampler does not normalize the colors when looking up into a pixel shader; they remain in the range of 0.0f to 255.0f. This is true for all programmable pixel shader models. For the fixed-function pixel shader, the hardware should normalize to the 0.f to 1.f range and essentially treat it as the VideoUyVy texture. Hardware that exposes this format must have GraphicsDeviceCapabilities.PixelShader1xMaxValue set to a value capable of handling that range.</summary>
+		VideoRgBg,
+		/// <summary>MultiElement texture (not compressed)</summary>
+		Multi2Bgra32,
+		/// <summary>(Buffer format) 32-bit depth-buffer bit depth using 24 bits for the depth channel and 8 bits for the stencil channel.</summary>
+		Depth24Stencil8,
+		/// <summary>(Buffer format) A non-lockable format that contains 24 bits of depth (in a 24-bit floating-point format ? 20e4) and 8 bits of stencil.</summary>
+		Depth24Stencil8Single,
+		/// <summary>(Buffer format) 32-bit depth-buffer bit depth using 24 bits for the depth channel and 4 bits for the stencil channel.</summary>
+		Depth24Stencil4,
+		/// <summary>(Buffer format) 32-bit depth-buffer bit depth using 24 bits for the depth channel.</summary>
+		Depth24,
+		/// <summary>(Buffer format) 32-bit depth-buffer bit depth.</summary>
+		Depth32,
+		/// <summary>(Buffer format) 16-bit depth-buffer bit depth.</summary>
+		Depth16 = 54,
+		/// <summary>(Buffer format) 16-bit depth-buffer bit depth where 15 bits are reserved for the depth channel and 1 bit is reserved for the stencil channel.</summary>
+		Depth15Stencil1 = 56,
+		/// <summary>Surface format is unknown.</summary>
+		Unknown = -1
+	}
+}
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines the format of data in a depth buffer.</summary>
+	[SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
+	public enum DepthFormat
+	{
+		/// <summary>A non-lockable format that contains 24 bits of depth (in a 24-bit floating-point format ? 20E4) and 8 bits of stencil.</summary>
+		Depth24Stencil8 = 48,
+		/// <summary>A 32-bit depth-buffer bit depth that uses 24 bits for the depth channel and 8 bits for the stencil channel.</summary>
+		Depth24Stencil8Single,
+		/// <summary>A 32-bit depth-buffer bit depth that uses 24 bits for the depth channel and 4 bits for the stencil channel.</summary>
+		Depth24Stencil4,
+		/// <summary>A 32-bit depth-buffer bit depth that uses 24 bits for the depth channel.</summary>
+		Depth24,
+		/// <summary>a 32-bit depth-buffer bit depth.</summary>
+		Depth32,
+		/// <summary>A 16-bit depth-buffer bit depth.</summary>
+		Depth16 = 54,
+		/// <summary>A 16-bit depth-buffer bit depth in which 15 bits are reserved for the depth channel and 1 bit is reserved for the stencil channel.</summary>
+		Depth15Stencil1 = 56,
+		/// <summary>Format is unknown.</summary>
+		Unknown = -1
+	}
+}
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines supported image file formats that may be used for textures.</summary>
+	public enum ImageFileFormat
+	{
+		/// <summary>Portable float map file format.</summary>
+		Pfm = 8,
+		/// <summary>High dynamic-range file format.</summary>
+		Hdr = 7,
+		/// <summary>Microsoft Windows bitmap file format.</summary>
+		Dib = 6,
+		/// <summary>Portable pixmap file format.</summary>
+		Ppm = 5,
+		/// <summary>DirectDrawSurface file format.</summary>
+		Dds = 4,
+		/// <summary>Portable Network Graphics file format.</summary>
+		Png = 3,
+		/// <summary>Truevision Targa image file format.</summary>
+		Tga = 2,
+		/// <summary>Joint Photographic Experts Group (JPEG) compressed file format.</summary>
+		Jpg = 1,
+		/// <summary>Microsoft Windows bitmap file format.</summary>
+		Bmp = 0
+	}
+}
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines vertex element formats.</summary>
+	[SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
+	public enum VertexElementFormat : byte
+	{
+		/// <summary>Four-component, unsigned byte.</summary>
+		Byte4 = 5,
+		/// <summary>Four-component, packed, unsigned byte, mapped to 0 to 1 range. Input is in Int32 format (ARGB) expanded to (R, G, B, A).</summary>
+		Color = 4,
+		/// <summary>Two-component, 16-bit floating point expanded to (value, value, value, value). This type is valid for vertex shader version 2.0 or higher.</summary>
+		HalfVector2 = 15,
+		/// <summary>Four-component, 16-bit floating-point expanded to (value, value, value, value). This type is valid for vertex shader version 2.0 or higher.</summary>
+		HalfVector4,
+		/// <summary>Three-component, signed, 10 10 10 format normalized and expanded to (v[0]/511.0, v[1]/511.0, v[2]/511.0, 1).</summary>
+		Normalized101010 = 14,
+		/// <summary>Normalized, two-component, signed short, expanded to (first short/32767.0, second short/32767.0, 0, 1). This type is valid for vertex shader version 2.0 or higher.</summary>
+		NormalizedShort2 = 9,
+		/// <summary>Normalized, four-component, signed short, expanded to (first short/32767.0, second short/32767.0, third short/32767.0, fourth short/32767.0). This type is valid for vertex shader version 2.0 or higher.</summary>
+		NormalizedShort4,
+		/// <summary>Normalized, two-component, unsigned short, expanded to (first byte/65535.0, second byte/65535.0, 0, 1). This type is valid for vertex shader version 2.0 or higher.</summary>
+		Rg32,
+		/// <summary>Four-component byte with each byte normalized by dividing the component with 255.0f.  This type is valid for vertex shader version 2.0 or higher.</summary>
+		Rgba32 = 8,
+		/// <summary>Normalized, four-component, unsigned short, expanded to (first byte/65535.0, second byte/65535.0, third byte/65535.0, fourth byte/65535.0). This type is valid for vertex shader version 2.0 or higher.</summary>
+		Rgba64 = 12,
+		/// <summary>Two-component, signed short expanded to (value, value, 0, 1).</summary>
+		Short2 = 6,
+		/// <summary>Four-component, signed short expanded to  (value, value, value, value).</summary>
+		Short4,
+		/// <summary>Single-component, 32-bit floating-point, expanded to (float, 0, 0, 1).</summary>
+		Single = 0,
+		/// <summary>Three-component, unsigned, 10 10 10 format expanded to (value, value, value, 1).</summary>
+		UInt101010 = 13,
+		/// <summary>Two-component, 32-bit floating-point, expanded to (float, Float32 value, 0, 1).</summary>
+		Vector2 = 1,
+		/// <summary>Three-component, 32-bit floating point, expanded to (float, float, float, 1).</summary>
+		Vector3,
+		/// <summary>Four-component, 32-bit floating point, expanded to (float, float, float, float).</summary>
+		Vector4,
+		/// <summary>Type field in the declaration is unused. This is designed for use with VertexElementMethod.UV and VertexElementMethod.LookUpPresampled.</summary>
+		Unused = 17
+	}
+}
+

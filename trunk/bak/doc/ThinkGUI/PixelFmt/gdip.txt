@@ -1,0 +1,83 @@
+ms-help://MS.VSCC.v80/MS.MSDN.v80/MS.NETDEVFX.v20.chs/cpref8/html/T_System_Drawing_Imaging_ImageFlags.htm
+enum ImageFlags
+{
+    ImageFlagsNone                = 0,
+
+    // Low-word: shared with SINKFLAG_x
+
+    ImageFlagsScalable            = 0x0001,
+    ImageFlagsHasAlpha            = 0x0002,
+    ImageFlagsHasTranslucent      = 0x0004,
+    ImageFlagsPartiallyScalable   = 0x0008,
+
+    // Low-word: color space definition
+
+    ImageFlagsColorSpaceRGB       = 0x0010,
+    ImageFlagsColorSpaceCMYK      = 0x0020,
+    ImageFlagsColorSpaceGRAY      = 0x0040,
+    ImageFlagsColorSpaceYCBCR     = 0x0080,
+    ImageFlagsColorSpaceYCCK      = 0x0100,
+ 
+    // Low-word: image size info
+
+    ImageFlagsHasRealDPI          = 0x1000,
+    ImageFlagsHasRealPixelSize    = 0x2000,
+
+    // High-word
+
+    ImageFlagsReadOnly            = 0x00010000,
+    ImageFlagsCaching             = 0x00020000
+};
+
+
+
+
+ms-help://MS.VSCC.v80/MS.MSDN.v80/MS.NETDEVFX.v20.chs/cpref8/html/T_System_Drawing_Drawing2D_CompositingMode.htm
+CompositingMode 枚举  
+请参见   
+ 全部折叠 全部展开    语言筛选器： 全部 语言筛选器： 多个 语言筛选器： Visual Basic 语言筛选器： C# 语言筛选器： C++ 语言筛选器： J# 语言筛选器： JScript  
+ Visual Basic（声明） 
+ Visual Basic（用法） 
+ C# 
+ C++ 
+ J# 
+ JScript 
+指定源色与背景色组合的方式。 
+
+命名空间:System.Drawing.Drawing2D
+程序集:System.Drawing（在 system.drawing.dll 中）
+
+语法
+Visual Basic（声明） 
+Public Enumeration CompositingMode
+ 
+Visual Basic（用法） 
+Dim instance As CompositingMode
+
+ 
+C# 
+public enum CompositingMode
+ 
+C++ 
+public enum class CompositingMode
+ 
+J# 
+public enum CompositingMode
+ 
+JScript 
+public enum CompositingMode
+ 
+
+成员
+  成员名称 说明 
+ SourceCopy 指定在呈现颜色时，它改写背景色。  
+ SourceOver 指定在呈现颜色时，它与背景色混合。该混合由所呈现的颜色的 alpha 成分确定。  
+
+平台
+Windows 98、Windows 2000 SP4、Windows CE、Windows Millennium Edition、Windows Mobile for Pocket PC、Windows Mobile for Smartphone、Windows Server 2003、Windows XP Media Center Edition、Windows XP Professional x64 Edition、Windows XP SP2、Windows XP Starter Edition
+
+.NET Framework 并不是对每个平台的所有版本都提供支持。有关受支持版本的列表，请参见系统要求。
+
+版本信息
+.NET Framework
+受以下版本支持：2.0、1.1、1.0

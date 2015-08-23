@@ -1,0 +1,99 @@
+D:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86
+Microsoft.Xna.Framework.Graphics.dll
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines various types of surface formats.</summary>
+	/// <param name="Color">(Unsigned format) 32-bit ARGB pixel format with alpha, using 8 bits per channel.</param>
+	/// <param name="Bgr565">(Unsigned format) 16-bit BGR pixel format with 5 bits for blue, 6 bits for green, and 5 bits for red.</param>
+	/// <param name="Bgra5551">(Unsigned format) 16-bit BGRA pixel format where 5 bits are reserved for each color and 1 bit is reserved for alpha.</param>
+	/// <param name="Bgra4444">(Unsigned format) 16-bit BGRA pixel format with 4 bits for each channel.</param>
+	/// <param name="Dxt1">DXT1 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</param>
+	/// <param name="Dxt3">DXT3 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</param>
+	/// <param name="Dxt5">DXT5 compression texture format. The runtime will not allow an application to create a surface using a DXTn format unless the surface dimensions are multiples of 4. This applies to offscreen-plain surfaces, render targets, 2D textures, cube textures, and volume textures.</param>
+	/// <param name="NormalizedByte2">(Signed format) 16-bit bump-map format using 8 bits each for u and v data.</param>
+	/// <param name="NormalizedByte4">(Signed format) 32-bit bump-map format using 8 bits for each channel.</param>
+	/// <param name="Rgba1010102">(Unsigned format) 32-bit RGBA pixel format using 10 bits for each color and 2 bits for alpha.</param>
+	/// <param name="Rg32">(Unsigned format) 32-bit pixel format using 16 bits each for red and green.</param>
+	/// <param name="Rgba64">(Unsigned format) 64-bit RGBA pixel format using 16 bits for each component.</param>
+	/// <param name="Alpha8">(Unsigned format) 8-bit alpha only.</param>
+	/// <param name="Single">(IEEE format) 32-bit float format using 32 bits for the red channel.</param>
+	/// <param name="Vector2">(IEEE format) 64-bit float format using 32 bits for the red channel and 32 bits for the green channel.</param>
+	/// <param name="Vector4">(IEEE format) 128-bit float format using 32 bits for each channel (alpha, blue, green, red).</param>
+	/// <param name="HalfSingle">(Floating-point format) 16-bit float format using 16 bits for the red channel.</param>
+	/// <param name="HalfVector2">(Floating-point format) 32-bit float format using 16 bits for the red channel and 16 bits for the green channel.</param>
+	/// <param name="HalfVector4">(Floating-point format) 64-bit float format using 16 bits for each channel (alpha, blue, green, red).</param>
+	/// <param name="HdrBlendable">(Floating-point format) for high dynamic range data.</param>
+	public enum SurfaceFormat
+	{
+		Color,
+		Bgr565,
+		Bgra5551,
+		Bgra4444,
+		Dxt1,
+		Dxt3,
+		Dxt5,
+		NormalizedByte2,
+		NormalizedByte4,
+		Rgba1010102,
+		Rg32,
+		Rgba64,
+		Alpha8,
+		Single,
+		Vector2,
+		Vector4,
+		HalfSingle,
+		HalfVector2,
+		HalfVector4,
+		HdrBlendable
+	}
+}
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines the format of data in a depth-stencil buffer. Reference page contains links to related conceptual articles.</summary>
+	/// <param name="Depth16">A buffer that contains 16-bits of depth data.</param>
+	/// <param name="Depth24">A buffer that contains 24-bits of depth data.</param>
+	/// <param name="Depth24Stencil8">A 32 bit buffer that contains 24 bits of depth data and 8 bits of stencil data.</param>
+	/// <param name="None">Do not create a depth buffer.</param>
+	public enum DepthFormat
+	{
+		None,
+		Depth16,
+		Depth24,
+		Depth24Stencil8
+	}
+}
+
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+	/// <summary>Defines vertex element formats.</summary>
+	/// <param name="Single">Single-component, 32-bit floating-point, expanded to (float, 0, 0, 1).</param>
+	/// <param name="Vector2">Two-component, 32-bit floating-point, expanded to (float, Float32 value, 0, 1).</param>
+	/// <param name="Vector3">Three-component, 32-bit floating point, expanded to (float, float, float, 1).</param>
+	/// <param name="Vector4">Four-component, 32-bit floating point, expanded to (float, float, float, float).</param>
+	/// <param name="HalfVector2">Two-component, 16-bit floating point expanded to (value, value, value, value). This type is valid for vertex shader version 2.0 or higher.</param>
+	/// <param name="HalfVector4">Four-component, 16-bit floating-point expanded to (value, value, value, value). This type is valid for vertex shader version 2.0 or higher.</param>
+	/// <param name="Color">Four-component, packed, unsigned byte, mapped to 0 to 1 range. Input is in Int32 format (ARGB) expanded to (R, G, B, A).</param>
+	/// <param name="NormalizedShort2">Normalized, two-component, signed short, expanded to (first short/32767.0, second short/32767.0, 0, 1). This type is valid for vertex shader version 2.0 or higher.</param>
+	/// <param name="NormalizedShort4">Normalized, four-component, signed short, expanded to (first short/32767.0, second short/32767.0, third short/32767.0, fourth short/32767.0). This type is valid for vertex shader version 2.0 or higher.</param>
+	/// <param name="Short2">Two-component, signed short expanded to (value, value, 0, 1).</param>
+	/// <param name="Short4">Four-component, signed short expanded to (value, value, value, value).</param>
+	/// <param name="Byte4">Four-component, unsigned byte.</param>
+	public enum VertexElementFormat
+	{
+		Single,
+		Vector2,
+		Vector3,
+		Vector4,
+		Color,
+		Byte4,
+		Short2,
+		Short4,
+		NormalizedShort2,
+		NormalizedShort4,
+		HalfVector2,
+		HalfVector4
+	}
+}

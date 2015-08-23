@@ -1,0 +1,237 @@
+D:\Program Files\Microsoft SDKs\Windows\v7.0A\Include\ddraw.h
+
+/*
+ * DDPIXELFORMAT
+ */
+typedef struct _DDPIXELFORMAT
+{
+    DWORD       dwSize;                 // size of structure
+    DWORD       dwFlags;                // pixel format flags
+    DWORD       dwFourCC;               // (FOURCC code)
+    union
+    {
+        DWORD   dwRGBBitCount;          // how many bits per pixel
+        DWORD   dwYUVBitCount;          // how many bits per pixel
+        DWORD   dwZBufferBitDepth;      // how many total bits/pixel in z buffer (including any stencil bits)
+        DWORD   dwAlphaBitDepth;        // how many bits for alpha channels
+        DWORD   dwLuminanceBitCount;    // how many bits per pixel
+        DWORD   dwBumpBitCount;         // how many bits per "buxel", total
+        DWORD   dwPrivateFormatBitCount;// Bits per pixel of private driver formats. Only valid in texture
+                                        // format list and if DDPF_D3DFORMAT is set
+    } DUMMYUNIONNAMEN(1);
+    union
+    {
+        DWORD   dwRBitMask;             // mask for red bit
+        DWORD   dwYBitMask;             // mask for Y bits
+        DWORD   dwStencilBitDepth;      // how many stencil bits (note: dwZBufferBitDepth-dwStencilBitDepth is total Z-only bits)
+        DWORD   dwLuminanceBitMask;     // mask for luminance bits
+        DWORD   dwBumpDuBitMask;        // mask for bump map U delta bits
+        DWORD   dwOperations;           // DDPF_D3DFORMAT Operations
+    } DUMMYUNIONNAMEN(2);
+    union
+    {
+        DWORD   dwGBitMask;             // mask for green bits
+        DWORD   dwUBitMask;             // mask for U bits
+        DWORD   dwZBitMask;             // mask for Z bits
+        DWORD   dwBumpDvBitMask;        // mask for bump map V delta bits
+        struct
+        {
+            WORD    wFlipMSTypes;       // Multisample methods supported via flip for this D3DFORMAT
+            WORD    wBltMSTypes;        // Multisample methods supported via blt for this D3DFORMAT
+        } MultiSampleCaps;
+
+    } DUMMYUNIONNAMEN(3);
+    union
+    {
+        DWORD   dwBBitMask;             // mask for blue bits
+        DWORD   dwVBitMask;             // mask for V bits
+        DWORD   dwStencilBitMask;       // mask for stencil bits
+        DWORD   dwBumpLuminanceBitMask; // mask for luminance in bump map
+    } DUMMYUNIONNAMEN(4);
+    union
+    {
+        DWORD   dwRGBAlphaBitMask;      // mask for alpha channel
+        DWORD   dwYUVAlphaBitMask;      // mask for alpha channel
+        DWORD   dwLuminanceAlphaBitMask;// mask for alpha channel
+        DWORD   dwRGBZBitMask;          // mask for Z channel
+        DWORD   dwYUVZBitMask;          // mask for Z channel
+    } DUMMYUNIONNAMEN(5);
+} DDPIXELFORMAT;
+
+typedef DDPIXELFORMAT FAR* LPDDPIXELFORMAT;
+
+/*
+ * DDOVERLAYFX
+ */
+typedef struct _DDOVERLAYFX
+{
+    DWORD       dwSize;                         // size of structure
+    DWORD       dwAlphaEdgeBlendBitDepth;       // Bit depth used to specify constant for alpha edge blend
+    DWORD       dwAlphaEdgeBlend;               // Constant to use as alpha for edge blend
+    DWORD       dwReserved;
+    DWORD       dwAlphaDestConstBitDepth;       // Bit depth used to specify alpha constant for destination
+    union
+    {
+        DWORD   dwAlphaDestConst;               // Constant to use as alpha channel for dest
+        LPDIRECTDRAWSURFACE lpDDSAlphaDest;     // Surface to use as alpha channel for dest
+    } DUMMYUNIONNAMEN(1);
+    DWORD       dwAlphaSrcConstBitDepth;        // Bit depth used to specify alpha constant for source
+    union
+    {
+        DWORD   dwAlphaSrcConst;                // Constant to use as alpha channel for src
+        LPDIRECTDRAWSURFACE lpDDSAlphaSrc;      // Surface to use as alpha channel for src
+    } DUMMYUNIONNAMEN(2);
+    DDCOLORKEY  dckDestColorkey;                // DestColorkey override
+    DDCOLORKEY  dckSrcColorkey;                 // DestColorkey override
+    DWORD       dwDDFX;                         // Overlay FX
+    DWORD       dwFlags;                        // flags
+} DDOVERLAYFX;
+
+typedef DDOVERLAYFX FAR *LPDDOVERLAYFX;
+
+
+/*
+ * DDBLTBATCH: BltBatch entry structure
+ */
+typedef struct _DDBLTBATCH
+{
+    LPRECT              lprDest;
+    LPDIRECTDRAWSURFACE lpDDSSrc;
+    LPRECT              lprSrc;
+    DWORD               dwFlags;
+    LPDDBLTFX           lpDDBltFx;
+} DDBLTBATCH;
+
+typedef DDBLTBATCH FAR * LPDDBLTBATCH;
+
+
+/*
+ * DDGAMMARAMP
+ */
+typedef struct _DDGAMMARAMP
+{
+    WORD                red[256];
+    WORD                green[256];
+    WORD                blue[256];
+} DDGAMMARAMP;
+typedef DDGAMMARAMP FAR * LPDDGAMMARAMP;
+
+
+
+
+
+
+
+/****************************************************************************
+ *
+ * DIRECTDRAW PIXELFORMAT FLAGS
+ *
+ ****************************************************************************/
+
+/*
+ * The surface has alpha channel information in the pixel format.
+ */
+#define DDPF_ALPHAPIXELS                        0x00000001l
+
+/*
+ * The pixel format contains alpha only information
+ */
+#define DDPF_ALPHA                              0x00000002l
+
+/*
+ * The FourCC code is valid.
+ */
+#define DDPF_FOURCC                             0x00000004l
+
+/*
+ * The surface is 4-bit color indexed.
+ */
+#define DDPF_PALETTEINDEXED4                    0x00000008l
+
+/*
+ * The surface is indexed into a palette which stores indices
+ * into the destination surface's 8-bit palette.
+ */
+#define DDPF_PALETTEINDEXEDTO8                  0x00000010l
+
+/*
+ * The surface is 8-bit color indexed.
+ */
+#define DDPF_PALETTEINDEXED8                    0x00000020l
+
+/*
+ * The RGB data in the pixel format structure is valid.
+ */
+#define DDPF_RGB                                0x00000040l
+
+/*
+ * The surface will accept pixel data in the format specified
+ * and compress it during the write.
+ */
+#define DDPF_COMPRESSED                         0x00000080l
+
+/*
+ * The surface will accept RGB data and translate it during
+ * the write to YUV data.  The format of the data to be written
+ * will be contained in the pixel format structure.  The DDPF_RGB
+ * flag will be set.
+ */
+#define DDPF_RGBTOYUV                           0x00000100l
+
+/*
+ * pixel format is YUV - YUV data in pixel format struct is valid
+ */
+#define DDPF_YUV                                0x00000200l
+
+/*
+ * pixel format is a z buffer only surface
+ */
+#define DDPF_ZBUFFER                            0x00000400l
+
+/*
+ * The surface is 1-bit color indexed.
+ */
+#define DDPF_PALETTEINDEXED1                    0x00000800l
+
+/*
+ * The surface is 2-bit color indexed.
+ */
+#define DDPF_PALETTEINDEXED2                    0x00001000l
+
+/*
+ * The surface contains Z information in the pixels
+ */
+#define DDPF_ZPIXELS                            0x00002000l
+
+/*
+ * The surface contains stencil information along with Z
+ */
+#define DDPF_STENCILBUFFER                      0x00004000l
+
+/*
+ * Premultiplied alpha format -- the color components have been
+ * premultiplied by the alpha component.
+ */
+#define DDPF_ALPHAPREMULT                       0x00008000l
+
+
+/*
+ * Luminance data in the pixel format is valid.
+ * Use this flag for luminance-only or luminance+alpha surfaces,
+ * the bit depth is then ddpf.dwLuminanceBitCount.
+ */
+#define DDPF_LUMINANCE                          0x00020000l
+
+/*
+ * Luminance data in the pixel format is valid.
+ * Use this flag when hanging luminance off bumpmap surfaces,
+ * the bit mask for the luminance portion of the pixel is then
+ * ddpf.dwBumpLuminanceBitMask
+ */
+#define DDPF_BUMPLUMINANCE                      0x00040000l
+
+/*
+ * Bump map dUdV data in the pixel format is valid.
+ */
+#define DDPF_BUMPDUDV                           0x00080000l
+

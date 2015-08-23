@@ -1,0 +1,47 @@
+ZPixelFormat
+
+// ZPixelFormat - 像素格式
+// 仅用于表述像素各个通道的成分信息。不考虑颜色空间等信息。
+// bits 0-5 = channel0	// 第0个通道的信息。B。当为索引色模式时（type==ZPFT_PACKET8, channelCount==0），channel0就是整个像素的所占位数，可为0（当做8来处理）、1、2、4、8。
+// bits 6-11 = channel1	// 第1个通道的信息。G
+// bits 12-17 = channel2	// 第2个通道的信息。R
+// bits 18-23 = channel3	// 第3个通道的信息。A
+// bits 24-26 = type	// 像素格式类型。见ZPixelFormatType。
+// bits 27 = signed	// 带符号数。
+// bits 28-29 = channelCount	// 通道数量。为实际用到的通道数量-1，如DXGI_FORMAT_R16G16_UINT为(2-1)=1。取值范围为0~3，表示1~4个通道。
+// bits 30 = palpha	// Pre-multiplied alpha。像素格式包含自左乘的 alpha 值。
+// bits 31 = alpha	// 通道3是Alpha通道。当不带此标志时，忽略该通道。
+// bits ? = special	// 特别的。虽然能大致描述格式，但难以解读内容。例如带符号数，特殊格式的浮点数 DXGI_FORMAT_R11G11B10_FLOAT、DXGI_FORMAT_R9G9B9E5_SHAREDEXP
+typedef UINT32 ZPixelFormat;
+
+// ZPixelFormatType - 像素格式类型
+typedef enum tagZPixelFormatType
+{
+	ZPFT_NONE	= 0,	// NO.
+	ZPFT_PACKET8	= 1,	// P8. 8bit packet(channelCount!=0), or palette indexes(channelCount==0).
+	ZPFT_PACKET16	= 2,	// P16. 16bit packet
+	ZPFT_PACKET32	= 3,	// P32. 32bit packet
+	ZPFT_CHANNELI8	= 4,	// I8. byte channel
+	ZPFT_CHANNELI16	= 5,	// I16. uint16 channel
+	ZPFT_CHANNELF16	= 6,	// F16. float16 channel
+	ZPFT_CHANNELF32	= 7	// F32. float32 channel
+} ZPixelFormatType;
+
+
+#define MAKE_ZPixelFormat(type, channelCount, signed, special, channel0, channel1, channel2, channel3)
+
+const ZPixelFormat ZPixelFormat_AUTO = MAKE_ZPixelFormat(ZPFT_NONE, 0, 0, 0, 0, 0, 0, 0);	// Auto
+const ZPixelFormat ZPixelFormat_FourCC = MAKE_ZPixelFormat(ZPFT_NONE, 1, 0, 0, 0, 0, 0, 0);	// Four-Character Codes
+const ZPixelFormat ZPixelFormat_NoSupport = MAKE_ZPixelFormat(ZPFT_NONE, 2, 0, 0, 0, 0, 0, 0);	// No support
+const ZPixelFormat ZPixelFormat_Error = MAKE_ZPixelFormat(ZPFT_NONE, 3, 0, 0, 0, 0, 0, 0);	// Error
+
+
+// ZPixelFormatType - 像素格式模式
+typedef enum tagZPixelFormatMode
+{
+	ZPFM_NONE	= 0,	// 无效模式（type==ZPFT_NONE）
+	ZPFM_INDEXED	= 1,	// 索引模式（(type==ZPFT_PACKET8) && (channelCount==0)）
+	ZPFM_PACKET	= 2,	// 打包模式（((type==ZPFT_PACKET8) && (channelCount!=0)) || (type==ZPFT_PACKET16) || (type==ZPFT_PACKET32)）
+	ZPFM_CHANNEL	= 3,	// 通道模式（(type==ZPFT_CHANNELI8) || (type==ZPFT_CHANNELI16) || (type==ZPFT_CHANNELF16) || (type==ZPFT_CHANNELF32)）
+} ZPixelFormatMode;
+

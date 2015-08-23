@@ -1,0 +1,72 @@
+zDosGDI
+视频驱动层
+
+
+错误值
+~~~~~~
+
+typedef INT32 ZRESULT;
+
+D31: 致命错误。
+D30: 错误辅助。当D31~30为0时，完全成功；为1时，部分成功；为2时，错误；为3时，严重错误。
+D29~24: 保留。
+D23~16: 子系统类型。0: 通用或未知；1: 图形子系统。
+D15~0: 错误号。
+
+#define ZRESULT_ERRORBIT	31
+#define ZRESULT_ERRORMASK	0xC0000000
+#define ZRESULT_ERROR_OK	0x00000000
+#define ZRESULT_ERROR_FINE	0x40000000
+#define ZRESULT_ERROR_ERROR	0x80000000
+#define ZRESULT_ERROR_CRASH	0xC0000000
+
+#define ZRESULT_SUBSYSTEMMASK	0x00FF0000
+#define ZRESULT_SUBSYSTEM_UNKNOW	0x00000000
+#define ZRESULT_SUBSYSTEM_GRAPHICS	0x00010000
+
+#define ZRESULT_OK	0x00000000
+#define ZRESULT_ERROR	0x80000000
+
+
+
+视频表面
+~~~~~~~~
+
+TVideoSurface
+HVideoSurface
+
+
+操作函数
+~~~~~~~~
+
+一、稳定实现
+
+　　规则：
+1.只支持二元光栅操作，并提供特性检测功能。一般需求：画笔: Copy/Xor，刷子&位图：Copy/Xor/And/Xor。
+2.只支持纯色绘制，抖动由高层GDI负责。
+3.
+
+　　定义：
+[视频设备]
+UINT GetColorTable(HVideoDevice vd, int iStart, int iCount, CONST LPRGBQUAD pColors);
+UINT SetColorTable(HVideoDevice vd, int iStart, int iCount, CONST LPRGBQUAD pColors);
+[视频表面]
+UINT	GetScan(HVideoSurface vsf, UINT iScan, LPVOID pBuf, UINT iStart, UINT cbSize, EnumScanDataFlasgs uFlags);
+UINT	SetScan(HVideoSurface vsf, UINT iScan, const LPVOID pBuf, UINT iStart, UINT cbSize, EnumScanDataFlasgs uFlags);
+COLORREF	GetPixel(HVideoSurface vsf, int x, int y);	// 返回RGB颜色或CLR_INVALID
+COLORREF	SetPixel(HVideoSurface vsf, int x, int y, COLORREF cr);	// 返回设备颜色或CLR_INVALID
+UINT32	GetPixelV(HVideoSurface vsf, int x, int y);	// 只返回设备颜色或CLR_INVALID
+ZRESULT	SetPixelV(HVideoSurface vsf, int x, int y, UINT32 cr);
+ZRESULT	FillRect(HVideoSurface vsf, int iLeft, int iTop, int iRight, int iBottom, COLORREF cr, EnumScanDataFlasgs uFlags);
+
+
+typedef INT32 EnumScanDataFlasgs;
+#define SDF_BITPLANE	0x80000000	// data域为位平面索引。表示对某一个位面进行读写访问。否则按整个像素进行操作。
+#define SDF_BITPLANEWRITE	0xC0000000	// SDF_BITPLANE时的一种特殊的写状态，data域为写入位面的掩码。
+#define SDF_DATAMASK	0x000000FF	// 数据掩码，根据标志位的不同而含义不同
+#define SDF_ROPMASK	0x000F0000	// 二元光栅操作的掩码
+#define SDF_ROP_S	0x000C0000	// 源
+#define SDF_ROP_D	0x000A0000	// 目的
+#define SDF_ROP_BLACK	0x00000000
+#define SDF_ROP_WHITE	0x000F0000
+
